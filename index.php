@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ha">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sardaunan Zawarawa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    @keyframes floatText {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .floating-text {
+      animation: floatText 3s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="text-white">
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-70">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center space-x-2">
+        <img src="logo.png" alt="Logo" class="h-10 w-10" />
+        <span class="text-lg font-bold">Gidan</span>
+      </div>
+      <!-- Navigation -->
+      <div class="space-x-6 text-sm font-medium">
+        <a href="#" class="hover:text-yellow-400">Home</a>
+        <a href="#about" class="hover:text-yellow-400">About</a>
+        <a href="#services" class="hover:text-yellow-400">Services</a>
+        <a href="#contact" class="hover:text-yellow-400">Contact Us</a>
+        <button class="border border-white px-3 py-1 rounded hover:bg-white hover:text-black">Login</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="h-screen flex items-center justify-center text-center px-4 pt-24 relative">
+    <!-- Silhouettes -->
+    <div class="absolute inset-0 flex justify-between items-center px-16">
+      <img src="image/1.webp" alt="Male" class="h-96 opacity-80" />
+      <img src="image/2.webp" alt="Female" class="h-96 opacity-80" />
+    </div>
+
+    <!-- Floating Text -->
+    <div class="floating-text z-10 bg-black bg-opacity-60 p-8 rounded-lg max-w-2xl">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">SARDAUNAN ZAWARAWA</h1>
+      <p class="text-lg md:text-xl mb-6">
+        Connecting men, whether previously married or not<br />
+        with women of shared values and backgrounds.
+      </p>
+      <a href="#about" class="bg-yellow-500 text-black px-6 py-2 rounded hover:bg-yellow-400 font-semibold">Learn More</a>
+    </div>
+  </section>
+
+  <!-- Canvas for 3D Grid -->
+  <canvas id="gridCanvas"></canvas>
+
+  <!-- JavaScript for Animated Grid -->
+  <script>
+    const canvas = document.getElementById('gridCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const dots = [];
+    const spacing = 50;
+
+    for (let x = 0; x < canvas.width; x += spacing) {
+      for (let y = 0; y < canvas.height; y += spacing) {
+        dots.push({ x, y, glow: Math.random() });
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      dots.forEach(dot => {
+        const glow = Math.sin(Date.now() / 500 + dot.glow * 10) * 2 + 2;
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, glow, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 165, 0, 0.7)';
+        ctx.fill();
+      });
+
+      for (let i = 0; i < dots.length; i++) {
+        for (let j = i + 1; j < dots.length; j++) {
+          const dx = dots[i].x - dots[j].x;
+          const dy = dots[i].y - dots[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < spacing * 1.5) {
+            ctx.beginPath();
+            ctx.moveTo(dots[i].x, dots[i].y);
+            ctx.lineTo(dots[j].x, dots[j].y);
+            ctx.strokeStyle = 'rgba(255, 165, 0, 0.2)';
+            ctx.stroke();
+          }
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+
+</body>
+</html>
